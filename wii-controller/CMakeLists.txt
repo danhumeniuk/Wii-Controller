@@ -1,4 +1,4 @@
-﻿# This file is part of Wii-Scale
+# This file is part of Wii-Scale
 # Copyright © 2017-2018 Matt Robinson
 #
 # This program is free software; you can redistribute it and/or modify
@@ -28,10 +28,10 @@ INCLUDE_DIRECTORIES(${GIOMM_INCLUDE_DIRS})
 add_executable(wii-controller wii-controller.cpp XWiiMonitor.cpp XWiiIface.cpp UDev.cpp
                          UDevDevice.cpp BlueZDevice.cpp)
 
-set_property(TARGET controller PROPERTY CXX_STANDARD 11)
-set_property(TARGET controller PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET wii-controller PROPERTY CXX_STANDARD 11)
+set_property(TARGET wii-controller PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_link_libraries(wii-scale ${Boost_LIBRARIES} pthread xwiimote
+target_link_libraries(wii-controller ${Boost_LIBRARIES} pthread xwiimote
                                 udev ${GIOMM_LIBRARIES})
 
 file(GLOB CPP_FILES *.cpp)
@@ -39,4 +39,4 @@ file(GLOB CPP_FILES *.cpp)
 add_custom_target(cppcheck ALL COMMAND cppcheck --quiet --error-exitcode=2
                   --enable=all --suppress=missingIncludeSystem --std=c++11
                   ${CPP_FILES}
-                  DEPENDS wii-scale VERBATIM)
+                  DEPENDS wii-controller VERBATIM)
