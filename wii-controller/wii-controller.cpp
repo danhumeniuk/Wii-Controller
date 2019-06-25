@@ -3,9 +3,6 @@
  * Copyright © 2015 Andreas Älveborn
  * Copyright © 2016-2017 Matt Robinson
  *
- * This has been modified to enable the Wii Balance Board to be used
- * as a controller for Bumper Car Sumo senior project 
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -21,24 +18,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <deque>
-#include <numeric>
+#include <bluetooth/bluetooth.h>
 
-#include <xwiimote.h>
-
+#include "xwiimote.h"
 #include "XWiiMonitor.h"
 
 using namespace std;
 
-std::unique_ptr<XWiiIface> board;
+unique_ptr<XWiiIface> board;
 
 std::unique_ptr<XWiiIface> connect()
 {
     XWiiMonitor monitor;
-    std::unique_ptr<XWiiIface> device;
+    unique_ptr<XWiiIface> device;
 
     while(device = monitor.Poll())
     {
@@ -47,6 +39,7 @@ std::unique_ptr<XWiiIface> connect()
             // Not a balance board, try the next device
             continue;
         }
+
         device->EnableBalanceBoard();
         return device;
     }
@@ -55,31 +48,41 @@ std::unique_ptr<XWiiIface> connect()
 
 int main(int argc, const char* argv[])
 {
-    printf("Wii-Scale started\n");
+    
+    printf("Wii Controller started\n");
 
     board = connect();
+
+   
     if(board == nullptr)
     {
+        printf("Board Not Connected\n");
         return 0;
     }
-    
-    // Controller
+   
     while(1)
     {
+        if(!board)
+        {
+            continue;
+        }
+        
         struct xwii_event event;
         board->Dispatch(XWII_EVENT_WATCH | XWII_EVENT_BALANCE_BOARD, &event);
 
         if(event.type == XWII_EVENT_WATCH)
         {
-            // Board has disconnected
-            printf("DISCONNECTED\n");
             board = nullptr;
-			return 0;
+            continue;
         }
 
         for(int i = 0; i < 4; i++)
         {
-            printf("%d\n",event.v.abs[i].x);
+            printf("%d\t", event.v.abs[i].x);
         }
+
+        printf("\n");
     }
+    
+    return 0;
 }
