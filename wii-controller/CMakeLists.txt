@@ -1,4 +1,4 @@
-# This file is part of Wii-Scale
+﻿# This file is part of Wii-Scale
 # Copyright © 2017-2018 Matt Robinson
 #
 # This program is free software; you can redistribute it and/or modify
@@ -23,17 +23,15 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 
-add_subdirectory(socket.io-client-cpp EXCLUDE_FROM_ALL)
+INCLUDE_DIRECTORIES(${GIOMM_INCLUDE_DIRS})
 
-INCLUDE_DIRECTORIES(socket.io-client-cpp/src ${GIOMM_INCLUDE_DIRS})
-
-add_executable(wii-scale wii-scale.cpp XWiiMonitor.cpp XWiiIface.cpp UDev.cpp
+add_executable(wii-controller wii-controller.cpp XWiiMonitor.cpp XWiiIface.cpp UDev.cpp
                          UDevDevice.cpp BlueZDevice.cpp)
 
-set_property(TARGET wii-scale PROPERTY CXX_STANDARD 11)
-set_property(TARGET wii-scale PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET controller PROPERTY CXX_STANDARD 11)
+set_property(TARGET controller PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_link_libraries(wii-scale sioclient ${Boost_LIBRARIES} pthread xwiimote
+target_link_libraries(wii-scale ${Boost_LIBRARIES} pthread xwiimote
                                 udev ${GIOMM_LIBRARIES})
 
 file(GLOB CPP_FILES *.cpp)
